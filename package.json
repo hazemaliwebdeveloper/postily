@@ -1,13 +1,16 @@
 {
-  "name": "gitroom",
+  "name": "postiz",
   "version": "1.0.0",
+  "engines": {
+    "node": "18.x"
+  },
   "description": "",
   "main": "index.js",
   "license": "AGPL-3.0",
   "keywords": [],
   "author": "",
   "engines": {
-    "node": ">=20.0.0 <21.0.0"
+    "node": "18.x"
   },
   "packageManager": "pnpm@10.6.1",
   "scripts": {
