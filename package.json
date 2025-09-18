@@ -2,16 +2,13 @@
   "name": "postiz",
   "version": "1.0.0",
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "description": "",
   "main": "index.js",
   "license": "AGPL-3.0",
   "keywords": [],
   "author": "",
-  "engines": {
-    "node": "18.x"
-  },
   "packageManager": "pnpm@10.6.1",
   "scripts": {
     "dev": "pnpm run --filter ./apps/extension --filter ./apps/cron --filter ./apps/workers --filter ./apps/backend --filter ./apps/frontend --parallel dev",
