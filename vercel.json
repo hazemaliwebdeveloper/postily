@@ -1,0 +1,21 @@
+{
+    "buildCommand": "cd apps/frontend && pnpm build",
+    "outputDirectory": "apps/frontend/.next",
+    "framework": "nextjs",
+    "installCommand": "pnpm install",
+    "builds": [
+        {
+            "src": "apps/frontend/package.json",
+            "use": "@vercel/next"
+        }
+    ],
+    "env": {
+        "NODE_VERSION": "20.x",
+        "PACKAGE_MANAGER": "pnpm"
+    },
+    "functions": {
+        "apps/frontend/.next/server/pages/api/**/*.js": {
+            "maxDuration": 30
+        }
+    }
+}

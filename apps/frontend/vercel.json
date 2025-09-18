@@ -1,0 +1,9 @@
+{
+    "buildCommand": "next build",
+    "outputDirectory": ".next",
+    "framework": "nextjs",
+    "installCommand": "cd ../.. && pnpm install",
+    "env": {
+        "NODE_VERSION": "20.x"
+    }
+}

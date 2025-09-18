@@ -1,0 +1,170 @@
+# Redis Production Configuration for Postiz
+# This file provides production-ready Redis configuration
+# Use with: docker-compose -f docker-compose.dev.yaml -f docker-compose.redis.yaml up
+
+version: '3.8'
+
+services:
+  postiz-redis:
+    image: redis:7-alpine
+    container_name: postiz-redis-prod
+    restart: unless-stopped
+
+    # Use custom Redis configuration
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+    # Mount custom configuration
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis-data:/data
+      - redis-logs:/var/log/redis
+
+    # Environment variables
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.5'
+
+    # Health check
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    # Security
+    security_opt:
+      - no-new-privileges:true
+
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Network
+    networks:
+      - postiz-network
+    # Ports (only expose if needed for external access)
+    # ports:
+    #   - "6379:6379"
+
+    # Redis Sentinel for high availability (optional)
+  postiz-redis-sentinel:
+    image: redis:7-alpine
+    container_name: postiz-redis-sentinel
+    restart: unless-stopped
+
+    command: redis-sentinel /usr/local/etc/redis/sentinel.conf
+
+    volumes:
+      - ./redis-sentinel.conf:/usr/local/etc/redis/sentinel.conf:ro
+      - sentinel-data:/data
+
+    depends_on:
+      - postiz-redis
+
+    networks:
+      - postiz-network
+    # Uncomment if you need external access to sentinel
+    # ports:
+    #   - "26379:26379"
+
+    # Redis Cluster Node 2 (for clustering setup)
+  postiz-redis-node2:
+    image: redis:7-alpine
+    container_name: postiz-redis-node2
+    restart: unless-stopped
+
+    command: redis-server /usr/local/etc/redis/redis-cluster.conf
+
+    volumes:
+      - ./redis-cluster.conf:/usr/local/etc/redis/redis-cluster.conf:ro
+      - redis-node2-data:/data
+
+    networks:
+      - postiz-network
+
+    # Only enable if using Redis Cluster
+    profiles:
+      - cluster
+
+  # Redis Cluster Node 3 (for clustering setup)
+  postiz-redis-node3:
+    image: redis:7-alpine
+    container_name: postiz-redis-node3
+    restart: unless-stopped
+
+    command: redis-server /usr/local/etc/redis/redis-cluster.conf
+
+    volumes:
+      - ./redis-cluster.conf:/usr/local/etc/redis/redis-cluster.conf:ro
+      - redis-node3-data:/data
+
+    networks:
+      - postiz-network
+
+    # Only enable if using Redis Cluster
+    profiles:
+      - cluster
+
+  # Redis Exporter for Prometheus monitoring
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: postiz-redis-exporter
+    restart: unless-stopped
+
+    environment:
+      - REDIS_ADDR=redis://postiz-redis:6379
+      - REDIS_EXPORTER_LOG_FORMAT=json
+
+    depends_on:
+      - postiz-redis
+
+    networks:
+      - postiz-network
+
+    ports:
+      - "9121:9121"
+
+    # Only enable if using monitoring
+    profiles:
+      - monitoring
+
+volumes:
+  redis-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./data/redis
+
+  redis-logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./logs/redis
+
+  sentinel-data:
+    driver: local
+
+  redis-node2-data:
+    driver: local
+
+  redis-node3-data:
+    driver: local
+
+networks:
+  postiz-network:
+    external: true
