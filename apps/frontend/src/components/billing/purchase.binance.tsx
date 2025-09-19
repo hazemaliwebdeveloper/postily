@@ -1,8 +1,3 @@
-"redis:dev": "docker compose -f ./docker-compose.dev.yaml up -d postily-redis",
-    services:
-postily - redis:
-container_name: postily - redis - prod
-
 import { FC, useCallback, useState } from 'react';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { Button } from '@gitroom/react/form/button';
