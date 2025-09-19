@@ -54,6 +54,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           plontoKey={process.env.NEXT_PUBLIC_POLOTNO!}
           billingEnabled={!!process.env.STRIPE_PUBLISHABLE_KEY}
           discordUrl={process.env.NEXT_PUBLIC_DISCORD_SUPPORT!}
+          whatsappUrl={process.env.NEXT_PUBLIC_WHATSAPP_SUPPORT!}
           frontEndUrl={process.env.FRONTEND_URL!}
           isGeneral={!!process.env.IS_GENERAL}
           genericOauth={!!process.env.POSTIZ_GENERIC_OAUTH}
@@ -72,9 +73,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           transloadit={
             process.env.TRANSLOADIT_AUTH && process.env.TRANSLOADIT_TEMPLATE
               ? [
-                  process.env.TRANSLOADIT_AUTH!,
-                  process.env.TRANSLOADIT_TEMPLATE!,
-                ]
+                process.env.TRANSLOADIT_AUTH!,
+                process.env.TRANSLOADIT_TEMPLATE!,
+              ]
               : []
           }
         >

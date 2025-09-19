@@ -13,6 +13,7 @@ interface VariableContextInterface {
   backendUrl: string;
   environment: string;
   discordUrl: string;
+  whatsappUrl: string;
   uploadDirectory: string;
   facebookPixel: string;
   telegramBotName: string;
@@ -36,6 +37,7 @@ const VariableContext = createContext({
   plontoKey: '',
   backendUrl: '',
   discordUrl: '',
+  whatsappUrl: '',
   uploadDirectory: '',
   isSecured: false,
   telegramBotName: '',
