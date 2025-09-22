@@ -2,7 +2,7 @@
     "buildCommand": "cd apps/frontend && pnpm build",
     "outputDirectory": "apps/frontend/.next",
     "framework": "nextjs",
-    "installCommand": "pnpm install",
+    "installCommand": "pnpm install --no-frozen-lockfile",
     "builds": [
         {
             "src": "apps/frontend/package.json",
@@ -10,7 +10,7 @@
         }
     ],
     "env": {
-        "NODE_VERSION": "20.x",
+        "NODE_VERSION": "22.x",
         "PACKAGE_MANAGER": "pnpm"
     }
 }

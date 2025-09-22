@@ -13,7 +13,7 @@ interface VariableContextInterface {
   backendUrl: string;
   environment: string;
   discordUrl: string;
-  whatsappUrl: string;
+  whatsappUrl?: string; // made optional
   uploadDirectory: string;
   facebookPixel: string;
   telegramBotName: string;
