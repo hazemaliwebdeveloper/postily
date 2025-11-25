@@ -8,8 +8,8 @@ The Pozmixal app is committed to ensuring the security and integrity of our user
 
 If you discover a security vulnerability in the Pozmixal app, please report it to us privately via email to one of the maintainers:
 
-- @nevo-david
-- @ennogelhaus ([email](mailto:gelhausenno@outlook.de))
+- @hazem-ali
+- @hazemali ([email](mailto:hazemaligalal@outlook.com))
 
 When reporting a security vulnerability, please provide as much detail as possible, including:
 
