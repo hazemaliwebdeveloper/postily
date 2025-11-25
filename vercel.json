@@ -3,14 +3,9 @@
     "outputDirectory": "apps/frontend/.next",
     "framework": "nextjs",
     "installCommand": "pnpm install --no-frozen-lockfile",
-    "builds": [
-        {
-            "src": "apps/frontend/package.json",
-            "use": "@vercel/next"
-        }
-    ],
+    "ignoreCommand": "git diff --quiet HEAD^ HEAD ./apps/frontend/ ./libraries/",
     "env": {
-        "NODE_VERSION": "22.x",
+        "NODE_VERSION": "20.x",
         "PACKAGE_MANAGER": "pnpm"
     }
 }

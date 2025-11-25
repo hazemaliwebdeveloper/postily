@@ -1,12 +1,12 @@
 {
-  "name": "postiz",
+  "name": "pozmixal",
   "version": "1.0.0",
   "engines": {
     "node": "22.19.0"
   },
   "description": "",
   "main": "index.js",
-  "license": "AGPL-3.0",
+  "license": "Proprietary",
   "keywords": [],
   "author": "",
   "packageManager": "pnpm@10.6.1",
@@ -41,7 +41,7 @@
     "docker-create": "./var/docker/docker-create.sh",
     "test-redis": "node test-redis.js",
     "redis:test": "node test-redis.js",
-    "redis:dev": "docker compose -f ./docker-compose.dev.yaml up -d postiz-redis",
+    "redis:dev": "docker compose -f ./docker-compose.dev.yaml up -d pozmixal-redis",
     "redis:prod": "docker compose -f ./docker-compose.dev.yaml -f ./docker-compose.redis.yaml up -d",
     "redis:monitor": "docker compose -f ./docker-compose.dev.yaml -f ./docker-compose.redis.yaml --profile monitoring up -d",
     "postinstall": "pnpm run prisma-generate",

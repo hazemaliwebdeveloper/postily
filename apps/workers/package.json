@@ -1,5 +1,5 @@
 {
-  "name": "postiz-workers",
+  "name": "pozmixal-workers",
   "version": "1.0.0",
   "engines": {
     "node": "22.19.0"
@@ -13,5 +13,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "Proprietary"
 }

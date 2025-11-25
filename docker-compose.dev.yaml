@@ -3,34 +3,36 @@
 # This is only for the dev enviroment
 
 services:
-  postiz-postgres:
+  pozmixal-postgres:
     # ref: https://hub.docker.com/_/postgres
     image: postgres:17-alpine # 17.0
-    container_name: postiz-postgres
+    container_name: pozmixal-postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: postiz-local-pwd
-      POSTGRES_USER: postiz-local
-      POSTGRES_DB: postiz-db-local
+      POSTGRES_PASSWORD: pozmixal-local-pwd
+      POSTGRES_USER: pozmixal-local
+      POSTGRES_DB: pozmixal-db-local
     volumes:
       - postgres-volume:/var/lib/postgresql/data
     ports:
       - 5432:5432
     networks:
-      - postiz-network
-  postiz-redis:
+      - pozmixal-network
+
+  pozmixal-redis:
     # ref: https://hub.docker.com/_/redis
     image: redis:7-alpine # 7.4.0
-    container_name: postiz-redis
+    container_name: pozmixal-redis
     restart: always
     ports:
       - 6379:6379
     networks:
-      - postiz-network
-  postiz-pg-admin:
+      - pozmixal-network
+
+  pozmixal-pg-admin:
     # ref: https://hub.docker.com/r/dpage/pgadmin4/tags
     image: dpage/pgadmin4:latest
-    container_name: postiz-pg-admin
+    container_name: pozmixal-pg-admin
     restart: always
     ports:
       - 8081:80
@@ -38,19 +40,20 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     networks:
-      - postiz-network
-  postiz-redisinsight:
+      - pozmixal-network
+
+  pozmixal-redisinsight:
     # ref: https://hub.docker.com/r/redis/redisinsight
     image: redis/redisinsight:latest
-    container_name: postiz-redisinsight
+    container_name: pozmixal-redisinsight
     links:
-      - postiz-redis
+      - pozmixal-redis
     ports:
       - '5540:5540'
     volumes:
       - redisinsight:/data
     networks:
-      - postiz-network
+      - pozmixal-network
     restart: always
 
 volumes:
@@ -59,5 +62,5 @@ volumes:
     external: false
 
 networks:
-  postiz-network:
+  pozmixal-network:
     external: false

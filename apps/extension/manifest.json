@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Postiz",
+  "name": "Pozmixal",
   "description": "Your ultimate social media scheduling tool",
   "options_ui": {
     "page": "src/pages/options/index.html"
@@ -14,17 +14,33 @@
   "icons": {
     "128": "icon-128.png"
   },
-  "permissions": ["activeTab", "cookies", "tabs"],
+  "permissions": [
+    "activeTab",
+    "cookies",
+    "tabs"
+  ],
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*", "<all_urls>"],
-      "js": ["src/pages/content/index.tsx"],
-      "css": ["contentStyle.css"]
+      "matches": [
+        "http://*/*",
+        "https://*/*",
+        "<all_urls>"
+      ],
+      "js": [
+        "src/pages/content/index.tsx"
+      ],
+      "css": [
+        "contentStyle.css"
+      ]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["contentStyle.css", "icon-128.png", "icon-32.png"],
+      "resources": [
+        "contentStyle.css",
+        "icon-128.png",
+        "icon-32.png"
+      ],
       "matches": []
     }
   ]
