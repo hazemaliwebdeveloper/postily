@@ -2,7 +2,7 @@
   "name": "@postily/node",
   "version": "1.0.8",
   "engines": {
-    "node": "22.19.0"
+    "node": "22"
   },
   "description": "The ultimate social media scheduling tool",
   "main": "dist/index.js",

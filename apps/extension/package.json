@@ -2,7 +2,7 @@
   "name": "postiz-extension",
   "version": "1.0.3",
   "engines": {
-    "node": "22.19.0"
+    "node": "22"
   },
   "description": "A simple chrome & firefox extension template with Vite, React, TypeScript and Tailwind CSS.",
   "scripts": {
