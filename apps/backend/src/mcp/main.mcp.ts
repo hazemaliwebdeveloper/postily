@@ -15,7 +15,7 @@ export class MainMcp {
     private _openAiService: OpenaiService
   ) {}
 
-  @McpTool({ toolName: 'POSTIZ_GET_CONFIG_ID' })
+  @McpTool({ toolName: 'POZMIXAL_GET_CONFIG_ID' })
   async preRun() {
     return [
       {
@@ -25,7 +25,7 @@ export class MainMcp {
     ];
   }
 
-  @McpTool({ toolName: 'POSTIZ_PROVIDERS_LIST' })
+  @McpTool({ toolName: 'POZMIXAL_PROVIDERS_LIST' })
   async listOfProviders(organization: string) {
     const list = (
       await this._integrationService.getIntegrationsList(organization)
@@ -48,13 +48,13 @@ export class MainMcp {
   }
 
   @McpTool({
-    toolName: 'POSTIZ_SCHEDULE_POST',
+    toolName: 'POZMIXAL_SCHEDULE_POST',
     zod: {
       type: eenum(['draft', 'schedule']),
       configId: string(),
       generatePictures: boolean(),
       date: string().describe('UTC TIME'),
-      providerId: string().describe('Use POSTIZ_PROVIDERS_LIST to get the id'),
+      providerId: string().describe('Use POZMIXAL_PROVIDERS_LIST to get the id'),
       posts: array(object({ text: string(), images: array(string()) })),
     },
   })

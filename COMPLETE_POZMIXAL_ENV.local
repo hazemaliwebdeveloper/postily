@@ -1,0 +1,215 @@
+# ========================================
+# POZMIXAL - COMPLETE LOCAL ENVIRONMENT CONFIGURATION
+# Copy this file to .env.local and .env for full functionality
+# ========================================
+
+# ========================================
+# 🚀 CRITICAL BACKEND/FRONTEND CONNECTIVITY
+# These settings eliminate all connection errors
+# ========================================
+PORT=3000
+NODE_ENV=development
+FRONTEND_URL=http://localhost:4200
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+BACKEND_URL=http://localhost:3000
+BACKEND_INTERNAL_URL=http://localhost:3000
+
+# ========================================
+# 🔐 SECURITY & AUTHENTICATION
+# ========================================
+JWT_SECRET=pozmixal-local-development-secret-key-12345-change-in-production
+NOT_SECURED=true
+IS_GENERAL=true
+DISABLE_X_ANALYTICS=true
+
+# ========================================
+# 🗄️ DATABASE CONFIGURATION (POZMIXAL REBRANDED)
+# PostgreSQL running in Docker
+# ========================================
+DATABASE_URL=postgresql://pozmixal-local:pozmixal-local-pwd@localhost:5432/pozmixal-db-local
+DATABASE_DIRECT_URL=postgresql://pozmixal-local:pozmixal-local-pwd@localhost:5432/pozmixal-db-local
+
+# ========================================
+# 💾 REDIS CONFIGURATION
+# Redis running in Docker
+# ========================================
+REDIS_URL=redis://localhost:6379
+
+# ========================================
+# 🎨 POZMIXAL OAUTH SETTINGS (FULLY REBRANDED)
+# ========================================
+NEXT_PUBLIC_POZMIXAL_OAUTH_DISPLAY_NAME=Authentik
+NEXT_PUBLIC_POZMIXAL_OAUTH_LOGO_URL=/icons/generic-oauth.svg
+POZMIXAL_GENERIC_OAUTH=false
+POZMIXAL_OAUTH_URL=https://auth.example.com
+POZMIXAL_OAUTH_AUTH_URL=https://auth.example.com/application/o/authorize
+POZMIXAL_OAUTH_TOKEN_URL=https://auth.example.com/application/o/token
+POZMIXAL_OAUTH_USERINFO_URL=https://auth.example.com/application/o/userinfo
+POZMIXAL_OAUTH_CLIENT_ID=your-oauth-client-id-here
+POZMIXAL_OAUTH_CLIENT_SECRET=your-oauth-client-secret-here
+
+# ========================================
+# 📁 APPLICATION STORAGE & UPLOADS
+# ========================================
+STORAGE_PROVIDER=local
+NEXT_PUBLIC_UPLOAD_STATIC_DIRECTORY=/uploads
+UPLOAD_DIRECTORY=./uploads
+DISABLE_IMAGE_COMPRESSION=false
+
+# ========================================
+# 🔧 DEVELOPMENT & DEBUGGING
+# ========================================
+API_LIMIT=30
+NX_ADD_PLUGINS=false
+DISABLE_RATE_LIMITING=true
+
+# ========================================
+# 🌐 SOCIAL MEDIA API KEYS
+# Add your API keys here when needed
+# ========================================
+
+# Twitter/X (optional for local dev)
+X_API_KEY=your-twitter-api-key-here
+X_API_SECRET=your-twitter-api-secret-here
+X_CLIENT_ID=your-twitter-client-id-here
+X_CLIENT_SECRET=your-twitter-client-secret-here
+
+# LinkedIn (optional for local dev)
+LINKEDIN_CLIENT_ID=your-linkedin-client-id-here
+LINKEDIN_CLIENT_SECRET=your-linkedin-client-secret-here
+
+# Reddit (optional for local dev)
+REDDIT_CLIENT_ID=your-reddit-client-id-here
+REDDIT_CLIENT_SECRET=your-reddit-client-secret-here
+
+# GitHub (optional for local dev)
+GITHUB_CLIENT_ID=your-github-client-id-here
+GITHUB_CLIENT_SECRET=your-github-client-secret-here
+
+# Google (optional for local dev)
+GOOGLE_CLIENT_ID=your-google-client-id-here
+GOOGLE_CLIENT_SECRET=your-google-client-secret-here
+
+# Facebook (optional for local dev)
+FACEBOOK_CLIENT_ID=your-facebook-client-id-here
+FACEBOOK_CLIENT_SECRET=your-facebook-client-secret-here
+
+# Discord (optional for local dev)
+DISCORD_CLIENT_ID=your-discord-client-id-here
+DISCORD_CLIENT_SECRET=your-discord-client-secret-here
+
+# ========================================
+# 🤖 AI & THIRD-PARTY SERVICES
+# Leave empty for local development
+# ========================================
+OPENAI_API_KEY=your-openai-api-key-here
+FAL_API_KEY=your-fal-api-key-here
+HUGGINGFACE_API_KEY=your-huggingface-api-key-here
+
+# ========================================
+# 💳 PAYMENT & BILLING (OPTIONAL)
+# Leave empty for local development
+# ========================================
+STRIPE_PUBLISHABLE_KEY=pk_test_your-stripe-publishable-key-here
+STRIPE_SECRET_KEY=sk_test_your-stripe-secret-key-here
+STRIPE_WEBHOOK_SECRET=whsec_your-stripe-webhook-secret-here
+
+# ========================================
+# 📊 ANALYTICS & TRACKING (OPTIONAL)
+# Leave empty for local development
+# ========================================
+NEXT_PUBLIC_POSTHOG_KEY=your-posthog-key-here
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+NEXT_PUBLIC_SENTRY_DSN=your-sentry-dsn-here
+NEXT_PUBLIC_FACEBOOK_PIXEL=your-facebook-pixel-id-here
+NEXT_PUBLIC_TOLT=your-tolt-id-here
+NEXT_PUBLIC_GOOGLE_ANALYTICS=your-google-analytics-id-here
+
+# ========================================
+# 🎧 SUPPORT & COMMUNICATION (OPTIONAL)
+# ========================================
+NEXT_PUBLIC_DISCORD_SUPPORT=https://discord.gg/your-discord-server
+NEXT_PUBLIC_WHATSAPP_SUPPORT=https://wa.me/your-whatsapp-number
+NEXT_PUBLIC_EMAIL_SUPPORT=support@pozmixal.com
+
+# ========================================
+# 📧 EMAIL SERVICES (OPTIONAL)
+# Leave empty for local development - emails will be logged to console
+# ========================================
+RESEND_API_KEY=re_your-resend-api-key-here
+SENDGRID_API_KEY=SG.your-sendgrid-api-key-here
+MAILGUN_API_KEY=your-mailgun-api-key-here
+MAILGUN_DOMAIN=your-mailgun-domain.com
+
+# ========================================
+# ☁️ CLOUD STORAGE (OPTIONAL)
+# Leave empty for local development - files stored locally
+# ========================================
+
+# AWS S3
+AWS_ACCESS_KEY_ID=your-aws-access-key-here
+AWS_SECRET_ACCESS_KEY=your-aws-secret-key-here
+AWS_REGION=us-east-1
+AWS_S3_BUCKET=your-s3-bucket-name
+
+# Cloudflare R2
+CLOUDFLARE_R2_ACCESS_KEY_ID=your-cloudflare-r2-access-key
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=your-cloudflare-r2-secret-key
+CLOUDFLARE_R2_BUCKET=your-r2-bucket-name
+CLOUDFLARE_R2_ENDPOINT=https://your-account-id.r2.cloudflarestorage.com
+
+# ========================================
+# 📈 MONITORING & LOGGING (OPTIONAL)
+# Leave empty for local development
+# ========================================
+SENTRY_DSN=your-sentry-dsn-here
+DATADOG_API_KEY=your-datadog-api-key-here
+NEW_RELIC_LICENSE_KEY=your-new-relic-license-key-here
+
+# ========================================
+# 🚀 FEATURE FLAGS (OPTIONAL)
+# Control which features are enabled
+# ========================================
+ENABLE_MARKETPLACE=true
+ENABLE_AI_FEATURES=true
+ENABLE_ANALYTICS=true
+ENABLE_BILLING=false
+ENABLE_THIRD_PARTY_INTEGRATIONS=true
+ENABLE_WEBHOOKS=true
+ENABLE_API=true
+
+# ========================================
+# 🏢 ORGANIZATION & BRANDING
+# ========================================
+NEXT_PUBLIC_APP_NAME=Pozmixal
+NEXT_PUBLIC_APP_DESCRIPTION=Pozmixal - Social Media Management Platform
+NEXT_PUBLIC_COMPANY_NAME=Pozmixal Inc.
+NEXT_PUBLIC_DOMAIN=pozmixal.com
+
+# ========================================
+# 🔗 CORS & SECURITY
+# ========================================
+CORS_ORIGIN=http://localhost:4200
+ALLOWED_ORIGINS=http://localhost:4200,http://127.0.0.1:4200
+
+# ========================================
+# 📝 NOTES FOR LOCAL DEVELOPMENT:
+# ========================================
+# 1. Most API keys are optional for basic local development
+# 2. Social media integrations will work with placeholder data
+# 3. Payments and billing are disabled by default
+# 4. Email services will log to console instead of sending emails
+# 5. Analytics and monitoring are optional for local development
+# 6. All "your-*-here" values should be replaced with actual keys when needed
+# 7. Never commit real API keys to version control
+# 8. Use .env.local for sensitive values that shouldn't be shared
+
+# ========================================
+# 🎯 QUICK START:
+# 1. Copy this file to .env.local
+# 2. Copy this file to .env  
+# 3. Start Docker: docker compose -f docker-compose.dev.yaml up -d
+# 4. Start backend: node FINAL_ERROR_FREE_BACKEND.js
+# 5. Start frontend: pnpm --filter ./apps/frontend run dev
+# 6. Access: http://localhost:4200
+# ========================================

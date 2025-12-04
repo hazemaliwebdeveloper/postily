@@ -67,46 +67,71 @@ export class AuthController {
         return;
       }
 
+      const domain = getCookieUrlFromDomain(process.env.FRONTEND_URL!);
+      const isLocalhost = domain === 'localhost';
+      
       response.cookie('auth', jwt, {
-        domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+        ...(isLocalhost ? { path: '/' } : { path: '/', domain }),
         ...(!process.env.NOT_SECURED
           ? {
               secure: true,
               httpOnly: true,
               sameSite: 'none',
             }
-          : {}),
+          : {
+              httpOnly: false,
+              sameSite: 'lax',
+            }),
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
       });
 
-      if (process.env.NOT_SECURED) {
-        response.header('auth', jwt);
-      }
+      response.header('auth', jwt);
 
       if (typeof addedOrg !== 'boolean' && addedOrg?.organizationId) {
         response.cookie('showorg', addedOrg.organizationId, {
-          domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+          ...(isLocalhost ? { path: '/' } : { path: '/', domain }),
           ...(!process.env.NOT_SECURED
             ? {
                 secure: true,
                 httpOnly: true,
                 sameSite: 'none',
               }
-            : {}),
+            : {
+                httpOnly: false,
+                sameSite: 'lax',
+              }),
           expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
         });
 
-        if (process.env.NOT_SECURED) {
-          response.header('showorg', addedOrg.organizationId);
-        }
+        response.header('showorg', addedOrg.organizationId);
       }
 
       response.header('onboarding', 'true');
       response.status(200).json({
         register: true,
+        message: 'Registration successful',
+        token: jwt,
       });
     } catch (e: any) {
-      response.status(400).send(e.message);
+      if (e.message.includes('Email already exists')) {
+        return response.status(400).json({
+          message: 'Email already registered',
+          code: 'EMAIL_EXISTS',
+          errors: { email: 'This email is already registered' }
+        });
+      }
+      
+      if (e.message.includes('Registration is disabled')) {
+        return response.status(400).json({
+          message: 'Registration is currently disabled',
+          code: 'REGISTRATION_DISABLED'
+        });
+      }
+      
+      return response.status(400).json({
+        message: e.message || 'Registration failed',
+        code: 'REGISTRATION_FAILED'
+      });
     }
   }
 
@@ -131,46 +156,79 @@ export class AuthController {
         getOrgFromCookie
       );
 
+      const domain = getCookieUrlFromDomain(process.env.FRONTEND_URL!);
+      const isLocalhost = domain === 'localhost';
+      
       response.cookie('auth', jwt, {
-        domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+        ...(isLocalhost ? { path: '/' } : { path: '/', domain }),
         ...(!process.env.NOT_SECURED
           ? {
               secure: true,
               httpOnly: true,
               sameSite: 'none',
             }
-          : {}),
+          : {
+              httpOnly: false,
+              sameSite: 'lax',
+            }),
         expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
       });
 
-      if (process.env.NOT_SECURED) {
-        response.header('auth', jwt);
-      }
+      response.header('auth', jwt);
 
       if (typeof addedOrg !== 'boolean' && addedOrg?.organizationId) {
         response.cookie('showorg', addedOrg.organizationId, {
-          domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+          ...(isLocalhost ? { path: '/' } : { path: '/', domain }),
           ...(!process.env.NOT_SECURED
             ? {
                 secure: true,
                 httpOnly: true,
                 sameSite: 'none',
               }
-            : {}),
+            : {
+                httpOnly: false,
+                sameSite: 'lax',
+              }),
           expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
         });
 
-        if (process.env.NOT_SECURED) {
-          response.header('showorg', addedOrg.organizationId);
-        }
+        response.header('showorg', addedOrg.organizationId);
       }
 
       response.header('reload', 'true');
       response.status(200).json({
         login: true,
+        message: 'Login successful',
+        token: jwt,
       });
     } catch (e: any) {
-      response.status(400).send(e.message);
+      if (e.message.includes('Invalid user name or password')) {
+        return response.status(401).json({
+          message: 'Invalid email or password',
+          code: 'INVALID_CREDENTIALS',
+          errors: { password: 'Incorrect password' }
+        });
+      }
+      
+      if (e.message.includes('User is not activated')) {
+        return response.status(401).json({
+          message: 'User account is not activated',
+          code: 'USER_NOT_ACTIVATED'
+        });
+      }
+      
+      if (e.message.includes('Email already exists')) {
+        return response.status(400).json({
+          message: 'Email already registered',
+          code: 'EMAIL_EXISTS',
+          errors: { email: 'This email is already registered' }
+        });
+      }
+      
+      return response.status(400).json({
+        message: e.message || 'Authentication failed',
+        code: 'AUTH_FAILED'
+      });
     }
   }
 
@@ -211,25 +269,28 @@ export class AuthController {
       return response.status(200).json({ can: false });
     }
 
+    const domain = getCookieUrlFromDomain(process.env.FRONTEND_URL!);
+    const isLocalhost = domain === 'localhost';
+    
     response.cookie('auth', activate, {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      ...(isLocalhost ? { path: '/' } : { path: '/', domain }),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
             httpOnly: true,
             sameSite: 'none',
           }
-        : {}),
+        : {
+            httpOnly: false,
+            sameSite: 'lax',
+          }),
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
     });
 
-    if (process.env.NOT_SECURED) {
-      response.header('auth', activate);
-    }
-
+    response.header('auth', activate);
     response.header('onboarding', 'true');
 
-    return response.status(200).json({ can: true });
+    return response.status(200).json({ can: true, token: activate });
   }
 
   @Post('/oauth/:provider/exists')
@@ -244,26 +305,33 @@ export class AuthController {
       return response.json({ token });
     }
 
+    const domain = getCookieUrlFromDomain(process.env.FRONTEND_URL!);
+    const isLocalhost = domain === 'localhost';
+    
     response.cookie('auth', jwt, {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      ...(isLocalhost ? { path: '/' } : { path: '/', domain }),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
             httpOnly: true,
             sameSite: 'none',
           }
-        : {}),
+        : {
+            httpOnly: false,
+            sameSite: 'lax',
+          }),
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
     });
 
-    if (process.env.NOT_SECURED) {
-      response.header('auth', jwt);
-    }
-
+    response.header('auth', jwt);
     response.header('reload', 'true');
 
     response.status(200).json({
       login: true,
+      token: jwt,
+      user: {
+        id: jwt
+      }
     });
   }
 }

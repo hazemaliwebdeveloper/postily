@@ -33,7 +33,16 @@
       "@gitroom/react/*": ["libraries/react-shared-libraries/src/*"],
       "@gitroom/plugins/*": ["libraries/plugins/src/*"],
       "@gitroom/workers/*": ["apps/workers/src/*"],
-      "@gitroom/extension/*": ["apps/extension/src/*"]
+      "@gitroom/extension/*": ["apps/extension/src/*"],
+      "@pozmixal/backend/*": ["apps/backend/src/*"],
+      "@pozmixal/cron/*": ["apps/cron/src/*"],
+      "@pozmixal/frontend/*": ["apps/frontend/src/*"],
+      "@pozmixal/helpers/*": ["libraries/helpers/src/*"],
+      "@pozmixal/nestjs-libraries/*": ["libraries/nestjs-libraries/src/*"],
+      "@pozmixal/react/*": ["libraries/react-shared-libraries/src/*"],
+      "@pozmixal/plugins/*": ["libraries/plugins/src/*"],
+      "@pozmixal/workers/*": ["apps/workers/src/*"],
+      "@pozmixal/extension/*": ["apps/extension/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

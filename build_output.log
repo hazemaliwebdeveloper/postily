@@ -1,0 +1,23 @@
+
+> pozmixal@1.0.0 build C:\Users\it\Downloads\pozmixal\postily
+> pnpm -r --workspace-concurrency=1 --filter ./apps/frontend --filter ./apps/backend --filter ./apps/workers  --filter ./apps/cron run build
+
+Scope: 4 of 8 workspace projects
+
+> pozmixal-frontend@1.0.0 build C:\Users\it\Downloads\pozmixal\postily\apps\frontend
+> next build
+
+  ▲ Next.js 14.2.33
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+C:\Users\it\Downloads\pozmixal\postily\apps\frontend:
+ ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  pozmixal-frontend@1.0.0 build: `next build`
+Exit status 1
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+
+> pozmixal-backend@1.0.0 build C:\Users\it\Downloads\pozmixal\postily\apps\backend
+> cross-env NODE_ENV=production nest build
+
+ ELIFECYCLE  Command failed with exit code 1.

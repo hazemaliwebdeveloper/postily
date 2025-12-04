@@ -22,9 +22,15 @@ export class PermissionsService {
     const subscription =
       await this._subscriptionService.getSubscriptionByOrganizationId(orgId);
 
-    const tier =
+    const isDevelopment = process.env.NODE_ENV === 'development' || process.env.ALLOW_ALL_FEATURES === 'true';
+    
+    let tier =
       subscription?.subscriptionTier ||
       (!process.env.STRIPE_PUBLISHABLE_KEY ? 'PRO' : 'FREE');
+
+    if (isDevelopment) {
+      tier = 'ULTIMATE';
+    }
 
     const { channel, ...all } = pricing[tier];
     return {
@@ -46,9 +52,12 @@ export class PermissionsService {
       Ability<[AuthorizationActions, Sections]>
     >(Ability as AbilityClass<AppAbility>);
 
+    const isDevelopment = process.env.NODE_ENV === 'development' || process.env.ALLOW_ALL_FEATURES === 'true';
+    
     if (
       requestedPermission.length === 0 ||
-      !process.env.STRIPE_PUBLISHABLE_KEY
+      !process.env.STRIPE_PUBLISHABLE_KEY ||
+      isDevelopment
     ) {
       for (const [action, section] of requestedPermission) {
         can(action, section);

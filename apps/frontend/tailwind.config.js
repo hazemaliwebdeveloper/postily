@@ -232,7 +232,6 @@ module.exports = {
   },
   plugins: [
     require('tailwind-scrollbar'),
-    require('tailwindcss-rtl'),
     function ({ addVariant }) {
       addVariant('child', '& > *');
       addVariant('child-hover', '& > *:hover');

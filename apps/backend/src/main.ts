@@ -15,20 +15,43 @@ import { HttpExceptionFilter } from '@gitroom/nestjs-libraries/services/exceptio
 import { ConfigurationChecker } from '@gitroom/helpers/configuration/configuration.checker';
 
 async function bootstrap() {
+  const frontendUrl = process.env.FRONTEND_URL;
+  const mainUrl = process.env.MAIN_URL;
+  
+  const allowedOrigins = [frontendUrl, mainUrl].filter(Boolean);
+  
+  if (!frontendUrl) {
+    Logger.warn('CRITICAL: FRONTEND_URL not set. CORS will block requests. Set FRONTEND_URL in .env');
+  }
+  
   const app = await NestFactory.create(AppModule, {
     rawBody: true,
     cors: {
-      ...(!process.env.NOT_SECURED ? { credentials: true } : {}),
+      credentials: true,
       exposedHeaders: [
         'reload',
         'onboarding',
         'activate',
-        ...(process.env.NOT_SECURED ? ['auth', 'showorg', 'impersonate'] : []),
+        'auth',
+        'showorg',
+        'impersonate',
+        'logout',
       ],
-      origin: [
-        process.env.FRONTEND_URL,
-        ...(process.env.MAIN_URL ? [process.env.MAIN_URL] : []),
-      ],
+      origin: (origin: string, callback: (err: Error | null, allow?: boolean) => void) => {
+        if (!origin) {
+          return callback(null, true);
+        }
+        
+        if (allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          Logger.warn(`CORS blocked request from origin: ${origin}. Allowed origins: ${allowedOrigins.join(', ')}`);
+          callback(new Error('CORS policy: origin not allowed'), false);
+        }
+      },
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'auth', 'showorg', 'impersonate'],
+      maxAge: 3600,
     },
   });
 

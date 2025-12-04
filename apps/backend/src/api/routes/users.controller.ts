@@ -52,21 +52,23 @@ export class UsersController {
     }
 
     const impersonate = req.cookies.impersonate || req.headers.impersonate;
+    const isDevelopment = process.env.NODE_ENV === 'development' || process.env.ALLOW_ALL_FEATURES === 'true';
+    
     // @ts-ignore
     return {
       ...user,
       orgId: organization.id,
       // @ts-ignore
-      totalChannels: !process.env.STRIPE_PUBLISHABLE_KEY ? 10000 : organization?.subscription?.totalChannels || pricing.FREE.channel,
+      totalChannels: !process.env.STRIPE_PUBLISHABLE_KEY || isDevelopment ? 10000 : organization?.subscription?.totalChannels || pricing.FREE.channel,
       // @ts-ignore
-      tier: organization?.subscription?.subscriptionTier || (!process.env.STRIPE_PUBLISHABLE_KEY ? 'ULTIMATE' : 'FREE'),
+      tier: isDevelopment ? 'ULTIMATE' : (organization?.subscription?.subscriptionTier || (!process.env.STRIPE_PUBLISHABLE_KEY ? 'ULTIMATE' : 'FREE')),
       // @ts-ignore
       role: organization?.users[0]?.role,
       // @ts-ignore
-      isLifetime: !!organization?.subscription?.isLifetime,
+      isLifetime: isDevelopment ? true : !!organization?.subscription?.isLifetime,
       admin: !!user.isSuperAdmin,
       impersonate: !!impersonate,
-      isTrailing: !process.env.STRIPE_PUBLISHABLE_KEY ? false : organization?.isTrailing,
+      isTrailing: !process.env.STRIPE_PUBLISHABLE_KEY || isDevelopment ? false : organization?.isTrailing,
       allowTrial: organization?.allowTrial,
       // @ts-ignore
       publicApi: organization?.users[0]?.role === 'SUPERADMIN' || organization?.users[0]?.role === 'ADMIN' ? organization?.apiKey : '',
@@ -178,49 +180,62 @@ export class UsersController {
     @Body('id') id: string,
     @Res({ passthrough: true }) response: Response
   ) {
+    const domain = getCookieUrlFromDomain(process.env.FRONTEND_URL!);
+    const isLocalhost = domain === 'localhost';
+    
     response.cookie('showorg', id, {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      ...(isLocalhost ? { path: '/' } : { path: '/', domain }),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
             httpOnly: true,
             sameSite: 'none',
           }
-        : {}),
+        : {
+            httpOnly: false,
+            sameSite: 'lax',
+          }),
       expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
     });
 
-    if (process.env.NOT_SECURED) {
-      response.header('showorg', id);
-    }
+    response.header('showorg', id);
 
     response.status(200).send();
   }
 
   @Post('/logout')
   logout(@Res({ passthrough: true }) response: Response) {
+    const domain = getCookieUrlFromDomain(process.env.FRONTEND_URL!);
+    const isLocalhost = domain === 'localhost';
+    
     response.cookie('auth', '', {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      ...(isLocalhost ? { path: '/' } : { path: '/', domain }),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
             httpOnly: true,
             sameSite: 'none',
           }
-        : {}),
+        : {
+            httpOnly: false,
+            sameSite: 'lax',
+          }),
       maxAge: -1,
       expires: new Date(0),
     });
 
     response.cookie('showorg', '', {
-      domain: getCookieUrlFromDomain(process.env.FRONTEND_URL!),
+      ...(isLocalhost ? { path: '/' } : { path: '/', domain }),
       ...(!process.env.NOT_SECURED
         ? {
             secure: true,
             httpOnly: true,
             sameSite: 'none',
           }
-        : {}),
+        : {
+            httpOnly: false,
+            sameSite: 'lax',
+          }),
       maxAge: -1,
       expires: new Date(0),
     });
