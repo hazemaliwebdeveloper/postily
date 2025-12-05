@@ -5,7 +5,7 @@ import { ioRedis } from './redis.service';
 const { logger } = Sentry;
 
 /**
- * Redis utility functions for Postiz application
+ * Redis utility functions for Pozmixal application
  * Provides common caching patterns and utilities
  */
 
@@ -359,7 +359,7 @@ export async function getCacheStats(redis: Redis = ioRedis): Promise<{
 }
 
 /**
- * Postiz-specific cache utilities
+ * Pozmixal-specific cache utilities
  */
 
 /**

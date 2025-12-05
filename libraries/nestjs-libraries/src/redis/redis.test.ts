@@ -103,8 +103,8 @@ export async function testRedisOperations(): Promise<{
         const config = createRedisConfig();
         redis = new Redis(config);
 
-        const testKey = `postiz:test:${Date.now()}`;
-        const testValue = { message: 'Hello from Postiz Redis test!', timestamp: Date.now() };
+        const testKey = `pozmixal:test:${Date.now()}`;
+        const testValue = { message: 'Hello from Pozmixal Redis test!', timestamp: Date.now() };
         const operations: Record<string, boolean> = {};
 
         // Test SET operation
@@ -150,7 +150,7 @@ export async function testRedisOperations(): Promise<{
 
         // Test TTL operation
         try {
-            const ttlTestKey = `postiz:ttl:test:${Date.now()}`;
+            const ttlTestKey = `pozmixal:ttl:test:${Date.now()}`;
             await redis.setex(ttlTestKey, 30, 'ttl-test');
             const ttlResult = await redis.ttl(ttlTestKey);
             operations.ttl = ttlResult > 0 && ttlResult <= 30;
@@ -216,7 +216,7 @@ export async function testRedisPerformance(iterations: number = 100): Promise<{
 
         // Test SET operations
         for (let i = 0; i < iterations; i++) {
-            const key = `postiz:perf:test:${i}:${Date.now()}`;
+            const key = `pozmixal:perf:test:${i}:${Date.now()}`;
             const value = { iteration: i, data: `test-data-${i}`, timestamp: Date.now() };
 
             const setStart = Date.now();

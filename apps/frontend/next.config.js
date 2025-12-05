@@ -1,5 +1,5 @@
 // @ts-check
-const { withSentryConfig } = require('@sentry/nextjs');
+import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -36,6 +36,6 @@ const nextConfig = {
 };
 
 // Wrap with Sentry if env vars exist, otherwise export raw config
-module.exports = process.env.SENTRY_AUTH_TOKEN
+export default process.env.SENTRY_AUTH_TOKEN
   ? withSentryConfig(nextConfig, { silent: true, org: process.env.SENTRY_ORG, project: process.env.SENTRY_PROJECT })
   : nextConfig;

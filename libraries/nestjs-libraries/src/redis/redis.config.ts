@@ -4,11 +4,11 @@ import * as Sentry from '@sentry/nextjs';
 const { logger } = Sentry;
 
 /**
- * Redis Configuration for Postiz
+ * Redis Configuration for Pozmixal
  * Provides production-ready Redis configuration with error handling,
  * connection pooling, and monitoring
  */
-export interface PostizRedisConfig extends RedisOptions {
+export interface PozmixalRedisConfig extends RedisOptions {
     // Connection settings
     host?: string;
     port?: number;
@@ -32,9 +32,9 @@ export interface PostizRedisConfig extends RedisOptions {
 }
 
 /**
- * Default Redis configuration for Postiz
+ * Default Redis configuration for Pozmixal
  */
-export const defaultRedisConfig: PostizRedisConfig = {
+export const defaultRedisConfig: PozmixalRedisConfig = {
     // Connection settings
     maxRetriesPerRequest: 3,
     retryDelayOnFailover: 100,
@@ -69,11 +69,11 @@ export const defaultRedisConfig: PostizRedisConfig = {
 /**
  * Parse Redis URL and create configuration
  */
-export function parseRedisUrl(redisUrl: string): PostizRedisConfig {
+export function parseRedisUrl(redisUrl: string): PozmixalRedisConfig {
     try {
         const url = new URL(redisUrl);
 
-        const config: PostizRedisConfig = {
+        const config: PozmixalRedisConfig = {
             ...defaultRedisConfig,
             host: url.hostname,
             port: parseInt(url.port) || 6379,
@@ -139,7 +139,7 @@ function isUpstashRedis(hostname: string): boolean {
 /**
  * Create Redis configuration based on environment
  */
-export function createRedisConfig(): PostizRedisConfig {
+export function createRedisConfig(): PozmixalRedisConfig {
     const redisUrl = process.env.REDIS_URL;
 
     if (!redisUrl) {
@@ -293,7 +293,7 @@ export const redisConfigs = {
 /**
  * Get environment-specific Redis configuration
  */
-export function getEnvironmentRedisConfig(): PostizRedisConfig {
+export function getEnvironmentRedisConfig(): PozmixalRedisConfig {
     const env = process.env.NODE_ENV || 'development';
     const baseConfig = redisConfigs[env as keyof typeof redisConfigs] || redisConfigs.development;
 

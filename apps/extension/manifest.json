@@ -17,8 +17,12 @@
   "permissions": [
     "activeTab",
     "cookies",
-    "tabs"
+    "tabs",
+    "storage"
   ],
+  "background": {
+    "service_worker": "src/pages/background/index.ts"
+  },
   "content_scripts": [
     {
       "matches": [

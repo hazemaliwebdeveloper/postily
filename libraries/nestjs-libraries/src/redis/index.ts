@@ -1,5 +1,5 @@
 /**
- * Redis Module for Postiz
+ * Redis Module for Pozmixal
  * 
  * This module provides comprehensive Redis functionality including:
  * - Connection management with cloud provider support
@@ -20,7 +20,7 @@ export {
     getEnvironmentRedisConfig,
     defaultRedisConfig,
     redisConfigs,
-    type PostizRedisConfig,
+    type PozmixalRedisConfig,
 } from './redis.config';
 
 // Redis utilities and caching patterns
@@ -40,7 +40,7 @@ export {
     cacheMSet,
     cacheMGet,
     getCacheStats,
-    // Postiz-specific utilities
+    // Pozmixal-specific utilities
     cacheUser,
     getCachedUser,
     cacheIntegration,

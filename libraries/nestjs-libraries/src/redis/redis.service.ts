@@ -5,7 +5,7 @@ import {
   checkRedisHealth,
   getRedisMetrics,
   getRedisMemoryUsage,
-  PostizRedisConfig
+  PozmixalRedisConfig
 } from './redis.config';
 
 const { logger } = Sentry;
@@ -149,7 +149,7 @@ class RedisService {
   private connectionAttempts: number = 0;
   private maxConnectionAttempts: number = 5;
 
-  constructor(config: PostizRedisConfig) {
+  constructor(config: PozmixalRedisConfig) {
     this.redis = new Redis(config);
     this.setupEventHandlers();
   }

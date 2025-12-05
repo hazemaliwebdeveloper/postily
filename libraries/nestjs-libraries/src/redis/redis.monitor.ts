@@ -8,7 +8,7 @@ import { getCacheStats } from './redis.utils';
 const { logger } = Sentry;
 
 /**
- * Redis Monitoring Service for Postiz
+ * Redis Monitoring Service for Pozmixal
  * Provides continuous monitoring and alerting for Redis health
  */
 @Injectable()

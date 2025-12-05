@@ -7,7 +7,7 @@ import { checkRedisHealth, getRedisMetrics, getRedisMemoryUsage } from './redis.
 const { logger } = Sentry;
 
 /**
- * Redis Health Check Service for Postiz
+ * Redis Health Check Service for Pozmixal
  * Provides comprehensive health monitoring for Redis connections
  */
 @Injectable()
