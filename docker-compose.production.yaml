@@ -1,0 +1,258 @@
+# Production Docker Compose Configuration
+# Optimized for production deployment with SSL, monitoring, and scaling
+
+version: '3.8'
+
+services:
+  # ==============================================
+  # FRONTEND (Next.js)
+  # ==============================================
+  pozmixal-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      args:
+        - NEXT_PUBLIC_VERSION=${VERSION:-latest}
+        - NODE_OPTIONS=--max-old-space-size=8192
+    container_name: pozmixal-frontend-prod
+    restart: unless-stopped
+    ports:
+      - "80:3000"
+      - "443:3001"
+    environment:
+      - NODE_ENV=production
+      - FRONTEND_URL=${FRONTEND_URL}
+      - NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL}
+    volumes:
+      - ./ssl:/app/ssl:ro
+    networks:
+      - pozmixal-prod-network
+    depends_on:
+      - pozmixal-backend-prod
+      - pozmixal-redis-prod
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==============================================
+  # BACKEND (NestJS API)
+  # ==============================================
+  pozmixal-backend-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend.prod
+      args:
+        - NODE_OPTIONS=--max-old-space-size=6144
+    container_name: pozmixal-backend-prod
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://pozmixal-redis-prod:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+    networks:
+      - pozmixal-prod-network
+    depends_on:
+      - pozmixal-postgres-prod
+      - pozmixal-redis-prod
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 6G
+        reservations:
+          cpus: '1.0'
+          memory: 3G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ==============================================
+  # WORKERS (Background Jobs)
+  # ==============================================
+  pozmixal-workers-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.workers.prod
+    container_name: pozmixal-workers-prod
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://pozmixal-redis-prod:6379
+    networks:
+      - pozmixal-prod-network
+    depends_on:
+      - pozmixal-postgres-prod
+      - pozmixal-redis-prod
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+  # ==============================================
+  # CRON JOBS (Scheduled Tasks)
+  # ==============================================
+  pozmixal-cron-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.cron.prod
+    container_name: pozmixal-cron-prod
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://pozmixal-redis-prod:6379
+    networks:
+      - pozmixal-prod-network
+    depends_on:
+      - pozmixal-postgres-prod
+      - pozmixal-redis-prod
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+  # ==============================================
+  # DATABASE (PostgreSQL)
+  # ==============================================
+  pozmixal-postgres-prod:
+    image: postgres:17-alpine
+    container_name: pozmixal-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pozmixal}
+      POSTGRES_USER: ${POSTGRES_USER:-pozmixal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # Production PostgreSQL optimization
+      POSTGRES_SHARED_BUFFERS: 512MB
+      POSTGRES_EFFECTIVE_CACHE_SIZE: 4GB
+      POSTGRES_WORK_MEM: 16MB
+      POSTGRES_MAINTENANCE_WORK_MEM: 256MB
+      POSTGRES_MAX_CONNECTIONS: 200
+    volumes:
+      - postgres-prod-data:/var/lib/postgresql/data
+      - ./backups:/backups
+    ports:
+      - "5432:5432"
+    networks:
+      - pozmixal-prod-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pozmixal}"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  # ==============================================
+  # REDIS (Cache & Sessions)
+  # ==============================================
+  pozmixal-redis-prod:
+    image: redis:7-alpine
+    container_name: pozmixal-redis-prod
+    restart: unless-stopped
+    command: >
+      redis-server 
+      --maxmemory 2gb 
+      --maxmemory-policy allkeys-lru 
+      --appendonly yes 
+      --appendfsync everysec
+      --save 900 1 
+      --save 300 10 
+      --save 60 10000
+    volumes:
+      - redis-prod-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - pozmixal-prod-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  # ==============================================
+  # NGINX (Reverse Proxy & SSL)
+  # ==============================================
+  pozmixal-nginx-prod:
+    image: nginx:alpine
+    container_name: pozmixal-nginx-prod
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl/certs:ro
+      - ./logs:/var/log/nginx
+    networks:
+      - pozmixal-prod-network
+    depends_on:
+      - pozmixal-frontend
+      - pozmixal-backend-prod
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+# ==============================================
+# VOLUMES
+# ==============================================
+volumes:
+  postgres-prod-data:
+    driver: local
+  redis-prod-data:
+    driver: local
+
+# ==============================================
+# NETWORKS
+# ==============================================
+networks:
+  pozmixal-prod-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

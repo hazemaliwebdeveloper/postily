@@ -1,0 +1,138 @@
+================================================================================
+                    POZMIXAL - QUICK START FOR LOCAL SETUP
+================================================================================
+
+✅ PREREQUISITES VERIFIED:
+   ✓ Node.js v22.19.0
+   ✓ npm v10.9.3
+   ✓ pnpm v10.6.1
+   ✓ Docker v28.5.1
+   ✓ Dependencies Installed
+
+⏳ NEXT STEPS (READ CAREFULLY):
+
+================================================================================
+STEP 1: START DOCKER DESKTOP (REQUIRED)
+================================================================================
+
+Windows:
+  1. Press Windows key
+  2. Type "Docker Desktop"
+  3. Click "Docker Desktop" to launch
+  4. Wait 30-60 seconds for it to fully start
+  5. You'll see a Docker icon in the system tray (bottom right)
+  6. ✓ Done when Docker is running
+
+To verify Docker is running, open PowerShell and run:
+  docker ps
+
+================================================================================
+STEP 2: OPEN POWERSHELL AND RUN THIS COMMAND
+================================================================================
+
+Copy and paste this entire block into PowerShell:
+
+cd C:\Users\it\Downloads\pozmixal\postily
+docker compose -f docker-compose.dev.yaml up -d
+
+Expected output:
+  [+] Running 4/4
+  ✔ Container pozmixal-postgres      Started
+  ✔ Container pozmixal-redis         Started
+  ✔ Container pozmixal-pg-admin      Started
+  ✔ Container pozmixal-redisinsight  Started
+
+================================================================================
+STEP 3: WAIT FOR POSTGRESQL (10-30 SECONDS)
+================================================================================
+
+Keep running this command until you see "accepting connections":
+
+docker exec pozmixal-postgres pg_isready -U pozmixal-local
+
+================================================================================
+STEP 4: GENERATE DATABASE SCHEMA
+================================================================================
+
+pnpm run prisma-generate
+pnpm run prisma-db-push
+
+Press 'y' if prompted. You should see "✓ Migrations completed"
+
+================================================================================
+STEP 5: START DEVELOPMENT ENVIRONMENT
+================================================================================
+
+pnpm run dev
+
+WAIT for messages like:
+  ➜  Backend ready on http://localhost:3000
+  ➜  Frontend ready on http://localhost:4200
+
+================================================================================
+STEP 6: ACCESS APPLICATION
+================================================================================
+
+Open browser: http://localhost:4200
+
+You should see Pozmixal login page. Click "Sign up" to create account.
+
+================================================================================
+AVAILABLE SERVICES:
+================================================================================
+
+Main Application    → http://localhost:4200
+Backend API         → http://localhost:3000
+API Documentation   → http://localhost:3000/docs
+Database Manager    → http://localhost:8081 (admin@admin.com / admin)
+Redis Manager       → http://localhost:5540
+
+================================================================================
+STOPPING EVERYTHING:
+================================================================================
+
+Press Ctrl+C in the terminal running "pnpm run dev"
+
+Then stop Docker containers:
+  docker compose -f docker-compose.dev.yaml down
+
+================================================================================
+TROUBLESHOOTING:
+================================================================================
+
+"Cannot connect to Docker daemon"
+  → Docker Desktop not running. Start it from Start Menu.
+
+"Port 3000 already in use"
+  → Kill existing process: netstat -ano | findstr :3000
+  → Then: taskkill /PID <PID> /F
+
+"PostgreSQL won't connect"
+  → docker restart pozmixal-postgres
+  → Wait 10 seconds
+  → Try again
+
+"Frontend shows blank page"
+  → Hard refresh: Ctrl+Shift+R
+  → Check DevTools (F12) Console tab for errors
+
+Cannot create account
+  → Verify migrations ran: pnpm run prisma-db-push
+  → Restart backend (Ctrl+C, then pnpm run dev)
+
+================================================================================
+DOCUMENTATION:
+================================================================================
+
+Detailed Setup Guide     → LOCAL_DEVELOPMENT_SETUP_GUIDE.md
+Full Instructions        → START_LOCAL_ENVIRONMENT.md
+Troubleshooting          → TROUBLESHOOTING.md
+Extension Setup          → EXTENSION_FIX_QUICK_START.md
+
+================================================================================
+
+Ready? Start with STEP 1 above!
+
+For detailed help, see: START_LOCAL_ENVIRONMENT.md
+
+Status: ✅ All prerequisites verified. Ready to build!

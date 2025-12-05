@@ -1,0 +1,69 @@
+╔══════════════════════════════════════════╗
+║   POSTIZ - QUICK START GUIDE             ║
+╚══════════════════════════════════════════╝
+
+⚠️ IMPORTANT: Do NOT close any terminal windows!
+
+═══════════════════════════════════════════
+
+STEP 1: Run This File
+  → SIMPLE_RUN.bat
+
+═══════════════════════════════════════════
+
+STEP 2: Wait for Message "SERVICES STARTING"
+  Backend takes 5-10 seconds to compile
+  Frontend takes 10-15 seconds to compile
+  DO NOT DO ANYTHING YET
+
+═══════════════════════════════════════════
+
+STEP 3: When You See "Ready in X seconds"
+  → Open browser
+  → Type: http://localhost:4200
+  → Hit Enter
+  → You should see login page
+
+═══════════════════════════════════════════
+
+STEP 4: Load Extension
+  1. Open Chrome
+  2. Type: chrome://extensions
+  3. Hit Enter
+  4. Toggle "Developer mode" (top right)
+  5. Click "Load unpacked"
+  6. Select folder: apps\extension\dist
+  7. Done!
+
+═══════════════════════════════════════════
+
+TROUBLESHOOTING:
+
+❌ "localhost refused to connect"
+   → Wait longer! Frontend still compiling
+   → Check terminal window title for "Ready"
+   → Don't close the terminal!
+
+❌ "Cannot GET /"
+   → Backend not running
+   → Check backend terminal for errors
+   → It should say "Listening on port 3000"
+
+❌ Terminal closed immediately
+   → Right-click SIMPLE_RUN.bat → Run as Administrator
+
+❌ Port 3000/4200 already in use
+   → Kill other applications using those ports
+   → Or use Task Manager to end processes
+
+═══════════════════════════════════════════
+
+WHAT'S RUNNING:
+
+Frontend:  http://localhost:4200
+Backend:   http://localhost:3000
+Extension: chrome://extensions (after loading)
+
+═══════════════════════════════════════════
+
+KEEP GOING! It will work!

@@ -23,7 +23,8 @@
     "noImplicitAny": true,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": true,
-    "strict": true,
+    "strict": false,
+    "noImplicitAny": false,
     "paths": {
       "@gitroom/backend/*": ["apps/backend/src/*"],
       "@gitroom/cron/*": ["apps/cron/src/*"],

@@ -1,0 +1,104 @@
+# ==============================================
+# PRODUCTION DOCKERFILE - OPTIMIZED BUILD
+# ==============================================
+# Multi-stage build for maximum efficiency
+
+# ==============================================
+# STAGE 1: Dependencies & Build
+# ==============================================
+FROM node:22-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache \
+    libc6-compat \
+    python3 \
+    make \
+    g++ \
+    bash \
+    curl
+
+# Install pnpm globally
+RUN npm install -g pnpm@10.6.1
+
+# Copy package files
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/frontend/package.json ./apps/frontend/
+COPY apps/backend/package.json ./apps/backend/
+COPY apps/workers/package.json ./apps/workers/
+COPY apps/cron/package.json ./apps/cron/
+COPY libraries/*/package.json ./libraries/
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile --prod=false
+
+# Copy source code
+COPY . .
+
+# Set build environment
+ENV NODE_ENV=production
+ENV NODE_OPTIONS="--max-old-space-size=8192 --max-semi-space-size=2048"
+
+# Generate Prisma client
+RUN pnpm run prisma-generate
+
+# Build all applications
+RUN pnpm run build
+
+# ==============================================
+# STAGE 2: Production Runtime
+# ==============================================
+FROM node:22-alpine AS runner
+
+# Security: Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    dumb-init \
+    curl \
+    bash
+
+# Install pnpm
+RUN npm install -g pnpm@10.6.1 pm2@5.3.0
+
+# Copy built applications from builder stage
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/static ./apps/frontend/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/public ./apps/frontend/public
+COPY --from=builder --chown=nextjs:nodejs /app/apps/backend/dist ./apps/backend/dist
+COPY --from=builder --chown=nextjs:nodejs /app/apps/workers/dist ./apps/workers/dist
+COPY --from=builder --chown=nextjs:nodejs /app/apps/cron/dist ./apps/cron/dist
+
+# Copy production dependencies
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./
+
+# Copy PM2 ecosystem file
+COPY ecosystem.config.js ./
+
+# Set environment
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Use non-root user
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Use dumb-init for proper signal handling
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start with PM2
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]

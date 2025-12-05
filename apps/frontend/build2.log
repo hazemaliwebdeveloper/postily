@@ -1,0 +1,101 @@
+
+> pozmixal-frontend@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.7
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings in 41s
+
+../../node_modules/@opentelemetry/instrumentation/build/esm/platform/node/instrumentation.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+../../node_modules/@opentelemetry/instrumentation/build/esm/platform/node/instrumentation.js
+../../node_modules/@opentelemetry/instrumentation/build/esm/platform/node/index.js
+../../node_modules/@opentelemetry/instrumentation/build/esm/platform/index.js
+../../node_modules/@opentelemetry/instrumentation/build/esm/index.js
+../../node_modules/@sentry/node/build/cjs/integrations/tracing/postgresjs.js
+../../node_modules/@sentry/node/build/cjs/index.js
+../../node_modules/@sentry/nextjs/build/cjs/index.server.js
+../../libraries/react-shared-libraries/src/sentry/initialize.sentry.next.basic.ts
+../../libraries/react-shared-libraries/src/sentry/initialize.sentry.server.ts
+./src/sentry.server.config.ts
+
+ ⚠ Compiled with warnings in 93s
+
+./src/app/global.scss.webpack[javascript/auto]!=!../../node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[11].use[2]!../../node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[11].use[3]!../../node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[14].oneOf[11].use[4]!../../node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[14].oneOf[11].use[5]!./src/app/global.scss
+Deprecation Warning on line 3, column 8 of file:///c:/Users/it/Downloads/pozmixal/postily/apps/frontend/src/app/global.scss:3:8:
+Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+
+3 | @import './colors.scss';
+
+src\app\global.scss 4:9  root stylesheet
+
+Import trace for requested module:
+./src/app/global.scss.webpack[javascript/auto]!=!../../node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[11].use[2]!../../node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[11].use[3]!../../node_modules/next/dist/build/webpack/loaders/resolve-url-loader/index.js??ruleSet[1].rules[14].oneOf[11].use[4]!../../node_modules/next/dist/compiled/sass-loader/cjs.js??ruleSet[1].rules[14].oneOf[11].use[5]!./src/app/global.scss
+./src/app/global.scss
+
+../../node_modules/@blueprintjs/core/lib/esm/components/context-menu/contextMenuSingleton.js
+Attempted import error: 'unmountComponentAtNode' is not exported from 'react-dom' (imported as 'ReactDOM').
+
+Import trace for requested module:
+../../node_modules/@blueprintjs/core/lib/esm/components/context-menu/contextMenuSingleton.js
+../../node_modules/@blueprintjs/core/lib/esm/components/index.js
+../../node_modules/@blueprintjs/core/lib/esm/index.js
+../../node_modules/polotno/side-panel/side-panel.js
+./src/components/launches/polonto.tsx
+./src/components/media/media.component.tsx
+./src/components/layout/settings.component.tsx
+
+../../node_modules/@blueprintjs/core/lib/esm/components/toast/overlayToaster.js
+Attempted import error: 'render' is not exported from 'react-dom' (imported as 'ReactDOM').
+
+Import trace for requested module:
+../../node_modules/@blueprintjs/core/lib/esm/components/toast/overlayToaster.js
+../../node_modules/@blueprintjs/core/lib/esm/components/index.js
+../../node_modules/@blueprintjs/core/lib/esm/index.js
+../../node_modules/polotno/side-panel/side-panel.js
+./src/components/launches/polonto.tsx
+./src/components/media/media.component.tsx
+./src/components/layout/settings.component.tsx
+
+../../node_modules/@blueprintjs/core/lib/esm/legacy/contextMenuLegacy.js
+Attempted import error: 'render' is not exported from 'react-dom' (imported as 'ReactDOM').
+
+Import trace for requested module:
+../../node_modules/@blueprintjs/core/lib/esm/legacy/contextMenuLegacy.js
+../../node_modules/@blueprintjs/core/lib/esm/legacy/contextMenuTargetLegacy.js
+../../node_modules/@blueprintjs/core/lib/esm/index.js
+../../node_modules/polotno/side-panel/side-panel.js
+./src/components/launches/polonto.tsx
+./src/components/media/media.component.tsx
+./src/components/layout/settings.component.tsx
+
+../../node_modules/@blueprintjs/core/lib/esm/legacy/contextMenuTargetLegacy.js
+Attempted import error: 'findDOMNode' is not exported from 'react-dom' (imported as 'ReactDOM').
+
+Import trace for requested module:
+../../node_modules/@blueprintjs/core/lib/esm/legacy/contextMenuTargetLegacy.js
+../../node_modules/@blueprintjs/core/lib/esm/index.js
+../../node_modules/polotno/side-panel/side-panel.js
+./src/components/launches/polonto.tsx
+./src/components/media/media.component.tsx
+./src/components/layout/settings.component.tsx
+
+../../node_modules/@blueprintjs/core/lib/esm/legacy/hotkeysDialogLegacy.js
+Attempted import error: 'unmountComponentAtNode' is not exported from 'react-dom' (imported as 'ReactDOM').
+
+Import trace for requested module:
+../../node_modules/@blueprintjs/core/lib/esm/legacy/hotkeysDialogLegacy.js
+../../node_modules/@blueprintjs/core/lib/esm/index.js
+../../node_modules/polotno/side-panel/side-panel.js
+./src/components/launches/polonto.tsx
+./src/components/media/media.component.tsx
+./src/components/layout/settings.component.tsx
+
+ ✓ Compiled successfully in 2.4min
+   Linting and checking validity of types ...
+ ⨯ ESLint: Invalid Options: - Unknown options: useEslintrc, extensions - 'extensions' has been removed.

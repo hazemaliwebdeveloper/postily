@@ -138,20 +138,33 @@ export const customFetch = (
   };
 };
 
-// FIXED fetchBackend configuration - eliminates baseUrl function errors
-export const fetchBackend = customFetch({
-  baseUrl: (() => {
-    // Enhanced environment variable resolution
+// FIXED fetchBackend configuration - ensures baseUrl is always available
+function getBackendUrl(): string {
+  try {
     if (typeof window !== 'undefined') {
       // Browser environment
       const url = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+      if (!url) {
+        console.error('❌ NEXT_PUBLIC_BACKEND_URL is not set. Defaulting to http://localhost:3000');
+        return 'http://localhost:3000';
+      }
       console.log('🌐 [POZMIXAL] Browser baseUrl resolved to:', url);
       return url;
     } else {
-      // Server environment
+      // Server environment - check all possible env vars
       const url = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+      if (!process.env.BACKEND_URL && !process.env.NEXT_PUBLIC_BACKEND_URL) {
+        console.warn('⚠️ Neither BACKEND_URL nor NEXT_PUBLIC_BACKEND_URL set. Using default http://localhost:3000');
+      }
       console.log('🖥️ [POZMIXAL] Server baseUrl resolved to:', url);
       return url;
     }
-  })(),
+  } catch (error) {
+    console.error('❌ Error resolving backend URL:', error);
+    return 'http://localhost:3000';
+  }
+}
+
+export const fetchBackend = customFetch({
+  baseUrl: getBackendUrl(),
 });

@@ -10,15 +10,7 @@ import utc from 'dayjs/plugin/utc';
 import { VideoOrImage } from '@gitroom/react/helpers/video.or.image';
 import { CopyClient } from '@gitroom/frontend/components/preview/copy.client';
 import { getT } from '@gitroom/react/translation/get.translation.service.backend';
-import dynamicLoad from 'next/dynamic';
-
-const RenderPreviewDate = dynamicLoad(
-  () =>
-    import('@gitroom/frontend/components/preview/render.preview.date').then(
-      (mod) => mod.RenderPreviewDate
-    ),
-  { ssr: false }
-);
+import { PreviewDateClient } from '@gitroom/frontend/components/preview/preview.date.client';
 
 dayjs.extend(utc);
 export const metadata: Metadata = {
@@ -102,7 +94,7 @@ export default async function Auth({
             )}
             <div className="flex-1">
               {t('publication_date', 'Publication Date:')}{' '}
-              <RenderPreviewDate date={post[0].publishDate} />
+              <PreviewDateClient date={post[0].publishDate} />
             </div>
           </div>
         </div>

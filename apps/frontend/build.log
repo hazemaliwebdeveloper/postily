@@ -1,0 +1,32 @@
+
+> pozmixal-frontend@1.0.0 build
+> next build
+
+   ▲ Next.js 15.5.7
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./src/app/(app)/(preview)/p/[id]/page.tsx
+Error:   [31mx[0m `ssr: false` is not allowed with `next/dynamic` in Server Components. Please move it into a Client Component.
+    ,-[[36;1;4mc:\Users\it\Downloads\pozmixal\postily\apps\frontend\src\app\(app)\(preview)\p\[id]\page.tsx[0m:15:1]
+ [2m12[0m |     import { getT } from '@gitroom/react/translation/get.translation.service.backend';
+ [2m13[0m |     import dynamicLoad from 'next/dynamic';
+ [2m14[0m |     
+ [2m15[0m | [35;1m,[0m[35;1m-[0m[35;1m>[0m const RenderPreviewDate = dynamicLoad(
+ [2m16[0m | [35;1m|[0m     () =>
+ [2m17[0m | [35;1m|[0m       import('@gitroom/frontend/components/preview/render.preview.date').then(
+ [2m18[0m | [35;1m|[0m         (mod) => mod.RenderPreviewDate
+ [2m19[0m | [35;1m|[0m       ),
+ [2m20[0m | [35;1m|[0m     { ssr: false }
+ [2m21[0m | [35;1m`[0m[35;1m-[0m[35;1m>[0m );
+ [2m22[0m |     
+ [2m23[0m |     dayjs.extend(utc);
+ [2m23[0m |     export const metadata: Metadata = {
+    `----
+
+Import trace for requested module:
+./src/app/(app)/(preview)/p/[id]/page.tsx
+
+
+> Build failed because of webpack errors

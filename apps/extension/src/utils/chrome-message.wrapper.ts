@@ -14,6 +14,7 @@ interface RetryOptions {
   initialDelayMs?: number;
   maxDelayMs?: number;
   timeoutMs?: number;
+  isContentScript?: boolean;
 }
 
 const DEFAULT_OPTIONS: RetryOptions = {
@@ -22,6 +23,16 @@ const DEFAULT_OPTIONS: RetryOptions = {
   maxDelayMs: 2000,
   timeoutMs: 5000,
 };
+
+const CONTENT_SCRIPT_OPTIONS: RetryOptions = {
+  maxRetries: 5,
+  initialDelayMs: 200,
+  maxDelayMs: 3000,
+  timeoutMs: 8000,
+};
+
+let serviceWorkerReady = false;
+let serviceWorkerReadyPromise: Promise<void> | null = null;
 
 /**
  * Helper: Calculate exponential backoff delay
@@ -32,34 +43,77 @@ function getBackoffDelay(attempt: number, maxDelay: number, initialDelay: number
 }
 
 /**
+ * Initialize service worker readiness check (content script safe)
+ */
+function initializeServiceWorkerReadiness(): void {
+  if (serviceWorkerReadyPromise) return;
+
+  serviceWorkerReadyPromise = new Promise((resolve) => {
+    const checkReady = async () => {
+      try {
+        const response = await new Promise<any>((resolveCheck, rejectCheck) => {
+          const timeoutId = setTimeout(() => {
+            rejectCheck(new Error('Timeout waiting for service worker'));
+          }, 1000);
+
+          chrome.runtime.sendMessage({ action: '__health_check__' }, (response) => {
+            clearTimeout(timeoutId);
+            if (chrome.runtime.lastError) {
+              rejectCheck(chrome.runtime.lastError);
+            } else {
+              resolveCheck(response);
+            }
+          });
+        });
+
+        if (response) {
+          serviceWorkerReady = true;
+          resolve();
+        }
+      } catch {
+        setTimeout(checkReady, 100);
+      }
+    };
+
+    checkReady();
+  });
+}
+
+/**
  * Core wrapper: Send message to service worker with retry logic and timeout
  */
 export async function sendMessageWithRetry<T = any>(
   message: any,
   options: RetryOptions = {}
 ): Promise<T> {
-  const config = { ...DEFAULT_OPTIONS, ...options };
+  const { isContentScript, ...restOptions } = options;
+  const config = {
+    ...(isContentScript ? CONTENT_SCRIPT_OPTIONS : DEFAULT_OPTIONS),
+    ...restOptions,
+  };
+
+  initializeServiceWorkerReadiness();
+  if (isContentScript && !serviceWorkerReady) {
+    await serviceWorkerReadyPromise;
+  }
+
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt <= config.maxRetries!; attempt++) {
     try {
       return await new Promise((resolve, reject) => {
-        // Set up timeout
         const timeoutId = setTimeout(() => {
           reject(new Error(`Chrome extension message timeout after ${config.timeoutMs}ms`));
         }, config.timeoutMs);
 
-        // Send message with response handler
         chrome.runtime.sendMessage(message, (response) => {
           clearTimeout(timeoutId);
 
-          // Handle Chrome runtime errors
           if (chrome.runtime.lastError) {
             reject(new Error(`Chrome extension error: ${chrome.runtime.lastError.message}`));
             return;
           }
 
-          // Handle server-side errors in response
           if (response?.error) {
             reject(new Error(`Service worker error: ${response.error}`));
             return;
@@ -71,7 +125,6 @@ export async function sendMessageWithRetry<T = any>(
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
 
-      // Don't retry on certain errors
       if (
         lastError.message.includes('Extension context invalidated') ||
         lastError.message.includes('The message port closed')
@@ -79,14 +132,12 @@ export async function sendMessageWithRetry<T = any>(
         throw lastError;
       }
 
-      // If this was the last attempt, throw
       if (attempt === config.maxRetries) {
         throw new Error(
           `Failed to establish connection after ${config.maxRetries! + 1} attempts. Last error: ${lastError.message}`
         );
       }
 
-      // Wait before retrying with exponential backoff
       const delayMs = getBackoffDelay(attempt, config.maxDelayMs!, config.initialDelayMs!);
       await new Promise((resolve) => setTimeout(resolve, delayMs));
     }
@@ -142,7 +193,7 @@ export async function makeHttpRequest(
       body,
       auth,
     },
-    options
+    { isContentScript: true, ...options }
   );
 }
 
@@ -155,7 +206,7 @@ export async function loadStorageWithRetry(key: string, options: RetryOptions = 
       action: 'loadStorage',
       key,
     },
-    options
+    { isContentScript: true, ...options }
   );
 }
 
@@ -170,7 +221,7 @@ export async function saveStorageWithRetry(
       key,
       value,
     },
-    options
+    { isContentScript: true, ...options }
   );
 }
 
@@ -186,6 +237,6 @@ export async function loadCookieWithRetry(
       action: 'loadCookie',
       cookieName,
     },
-    options
+    { isContentScript: true, ...options }
   );
 }

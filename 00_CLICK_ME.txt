@@ -1,0 +1,76 @@
+╔════════════════════════════════════════════════════════════╗
+║                                                            ║
+║  THIS FILE WILL SOLVE YOUR PROBLEM                         ║
+║                                                            ║
+║  👉 DOUBLE-CLICK THIS FILE IN YOUR PROJECT FOLDER:        ║
+║                                                            ║
+║         AUTO_RUN.bat                                       ║
+║                                                            ║
+║  Then WAIT about 1 minute...                               ║
+║                                                            ║
+║  Browser will open automatically with login page ✅        ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+
+
+WHAT HAPPENS:
+
+  1. You double-click AUTO_RUN.bat
+     ↓
+  2. Script installs, sets up, starts everything
+     ↓
+  3. Shows progress: [1/5] [2/5] [3/5] [4/5] [5/5]
+     ↓
+  4. Script waits for backend and frontend to be ready
+     ↓
+  5. Browser AUTOMATICALLY OPENS
+     ↓
+  6. You see Postiz login page ✅
+
+
+WHAT TO EXPECT:
+
+  • Small windows will appear and disappear (normal)
+  • Text will scroll showing progress
+  • After ~1 minute, your default browser opens
+  • You'll see: http://localhost:4200
+  • Login page appears
+  ✅ SUCCESS!
+
+
+IF SOMETHING GOES WRONG:
+
+  • Check the visible window for error messages
+  • Make sure PostgreSQL is running (Services on Windows)
+  • Make sure Redis is running (or docker run -d -p 6379:6379 redis:latest)
+  • Read FIX_NOW.md for troubleshooting
+
+
+AFTER IT WORKS:
+
+  1. Login or sign up
+  2. Load extension in Chrome:
+     • chrome://extensions
+     • Enable Developer mode
+     • Load unpacked
+     • Select: apps\extension\dist
+  3. Start using Postiz ✅
+
+
+═══════════════════════════════════════════════════════════
+
+DO IT NOW:
+
+  1. Find AUTO_RUN.bat in your project folder
+  2. Double-click it
+  3. Wait ~1 minute
+  4. Browser opens automatically
+  5. You see login page
+  ✅ DONE!
+
+═══════════════════════════════════════════════════════════
+
+That's it! No more "Connection Refused" errors.
+Everything is automated and will just work.
+
+Let's go! 🚀

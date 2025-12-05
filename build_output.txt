@@ -1,0 +1,12 @@
+
+> pozmixal@1.0.0 build C:\Users\it\Downloads\pozmixal\postily
+> pnpm -r --workspace-concurrency=1 --filter ./apps/frontend --filter ./apps/backend --filter ./apps/workers  --filter ./apps/cron run build
+
+Scope: 4 of 8 workspace projects
+
+> pozmixal-frontend@1.0.0 build C:\Users\it\Downloads\pozmixal\postily\apps\frontend
+> next build
+
+   ▲ Next.js 15.5.7
+
+   Creating an optimized production build ...

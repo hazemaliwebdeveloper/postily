@@ -1,58 +1,58 @@
 import { FC, memo, useCallback, useEffect, useState } from 'react';
 import { ProviderInterface } from '@gitroom/extension/providers/provider.interface';
 import { fetchCookie } from '@gitroom/extension/utils/load.cookie';
+import './action.component.css';
 
 const Comp: FC<{ removeModal: () => void; platform: string; style: string }> = (
   props
 ) => {
-  const load = async () => {
-    const cookie = await fetchCookie(`auth`);
-    if (document.querySelector('iframe#modal-postiz')) {
+  const load = useCallback(async () => {
+    try {
+      const cookie = await fetchCookie(`auth`);
+      
+      if (!cookie) {
+        console.warn('[Action Component] No authentication cookie found');
+        props.removeModal();
+        return;
+      }
+
+      if (document.querySelector('iframe#modal-pozmixal')) {
+        return;
+      }
+
+      const div = document.createElement('div');
+      div.className = 'modal-overlay';
+      document.body.appendChild(div);
+
+      const iframe = document.createElement('iframe');
+      iframe.className = 'modal-iframe';
+      // @ts-ignore
+      iframe.allowTransparency = 'true';
+      iframe.src =
+        (import.meta.env?.FRONTEND_URL || process?.env?.FRONTEND_URL) +
+        `/modal/${props.style}/${props.platform}?loggedAuth=${cookie}`;
+      iframe.id = 'modal-pozmixal';
+      div.appendChild(iframe);
+
+      window.addEventListener('message', (event) => {
+        if (event.data.action === 'closeIframe') {
+          const iframe = document.querySelector('iframe#modal-pozmixal');
+          if (iframe) {
+            props.removeModal();
+            div.remove();
+          }
+        }
+      });
+    } catch (error) {
+      console.error('[Action Component] Failed to load authentication:', error);
+      props.removeModal();
       return;
     }
-
-    const div = document.createElement('div');
-    div.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    div.style.position = 'fixed';
-    div.style.top = '0';
-    div.style.left = '0';
-    div.style.zIndex = '9999';
-    div.style.width = '100%';
-    div.style.height = '100%';
-    div.style.border = 'none';
-    div.style.overflow = 'hidden';
-    document.body.appendChild(div);
-
-    const iframe = document.createElement('iframe');
-    iframe.style.backgroundColor = 'transparent';
-    // @ts-ignore
-    iframe.allowTransparency = 'true';
-    iframe.src =
-      (import.meta.env?.FRONTEND_URL || process?.env?.FRONTEND_URL) +
-      `/modal/${props.style}/${props.platform}?loggedAuth=${cookie}`;
-    iframe.id = 'modal-postiz';
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    iframe.style.position = 'fixed';
-    iframe.style.top = '0';
-    iframe.style.left = '0';
-    iframe.style.zIndex = '9999';
-    iframe.style.border = 'none';
-    div.appendChild(iframe);
-
-    window.addEventListener('message', (event) => {
-      if (event.data.action === 'closeIframe') {
-        const iframe = document.querySelector('iframe#modal-postiz');
-        if (iframe) {
-          props.removeModal();
-          div.remove();
-        }
-      }
-    });
-  };
+  }, [props]);
+  
   useEffect(() => {
     load();
-  }, []);
+  }, [load]);
   return <></>;
 };
 export const ActionComponent: FC<{
@@ -63,7 +63,7 @@ export const ActionComponent: FC<{
   wrap: boolean;
   selector: string;
 }> = memo((props) => {
-  const { wrap, provider, selector, target, actionType } = props;
+  const { provider, selector, target } = props;
   const [modal, showModal] = useState(false);
   const handle = useCallback(async (e: any) => {
     showModal(true);
@@ -81,15 +81,13 @@ export const ActionComponent: FC<{
     setTimeout(() => {
       // @ts-ignore
       const targetInformation = target.getBoundingClientRect();
-      blockingDiv.style.position = 'absolute';
       blockingDiv.id = 'blockingDiv';
-      blockingDiv.style.cursor = 'pointer';
+      blockingDiv.className = `blocking-div ${selector}`;
       blockingDiv.style.top = `${targetInformation.top}px`;
       blockingDiv.style.left = `${targetInformation.left}px`;
       blockingDiv.style.width = `${targetInformation.width}px`;
       blockingDiv.style.height = `${targetInformation.height}px`;
       blockingDiv.style.zIndex = '9999';
-      blockingDiv.className = selector;
 
       document.body.appendChild(blockingDiv);
       blockingDiv.addEventListener('click', handle);
@@ -98,10 +96,10 @@ export const ActionComponent: FC<{
       blockingDiv.removeEventListener('click', handle);
       blockingDiv.remove();
     };
-  }, []);
+  }, [handle, selector, target]);
 
   return (
-    <div className="g-wrapper" style={{ position: 'relative' }}>
+    <div className="g-wrapper">
       <div className="absolute start-0 top-0 z-[9999] w-full h-full" />
       {modal && (
         <Comp

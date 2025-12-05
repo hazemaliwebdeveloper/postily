@@ -11,7 +11,8 @@
   "author": "",
   "packageManager": "pnpm@10.6.1",
   "scripts": {
-    "dev": "pnpm run --filter ./apps/extension --filter ./apps/cron --filter ./apps/workers --filter ./apps/backend --filter ./apps/frontend --parallel dev",
+    "dev": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192 --max-semi-space-size=1024\" pnpm run --filter ./apps/extension --filter ./apps/cron --filter ./apps/workers --filter ./apps/backend --filter ./apps/frontend --parallel dev",
+    "dev:memory-optimized": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192 --max-semi-space-size=1024 --expose-gc\" pnpm run --filter ./apps/extension --filter ./apps/cron --filter ./apps/workers --filter ./apps/backend --filter ./apps/frontend --parallel dev",
     "pm2": "pnpm run pm2-run",
     "publish-sdk": "pnpm run --filter ./apps/sdk publish",
     "pm2-run": "pm2 delete all || true && pnpm run prisma-db-push && pnpm run --parallel pm2 && pm2 logs",
@@ -45,7 +46,10 @@
     "redis:prod": "docker compose -f ./docker-compose.dev.yaml -f ./docker-compose.redis.yaml up -d",
     "redis:monitor": "docker compose -f ./docker-compose.dev.yaml -f ./docker-compose.redis.yaml --profile monitoring up -d",
     "postinstall": "pnpm run prisma-generate",
-    "test": "jest --coverage --detectOpenHandles --reporters=default --reporters=jest-junit"
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "type-check": "tsc --noEmit",
+    "test": "jest --coverage --detectOpenHandles --reporters=default --reporters=jest-junit --maxWorkers=50%"
   },
   "dependencies": {
     "@atproto/api": "^0.15.15",

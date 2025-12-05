@@ -14,13 +14,17 @@ export const PublicComponent = () => {
   const [reveal, setReveal] = useState(false);
   const [reveal2, setReveal2] = useState(false);
   const copyToClipboard = useCallback(() => {
-    toaster.show('API Key copied to clipboard', 'success');
-    copy(user?.publicApi!);
-  }, [user]);
+    if (user?.publicApi) {
+      toaster.show('API Key copied to clipboard', 'success');
+      copy(user.publicApi);
+    }
+  }, [user?.publicApi, toaster]);
   const copyToClipboard2 = useCallback(() => {
-    toaster.show('MCP copied to clipboard', 'success');
-    copy(`${backendUrl}/mcp/` + user?.publicApi + '/sse');
-  }, [user]);
+    if (user?.publicApi && backendUrl) {
+      toaster.show('MCP copied to clipboard', 'success');
+      copy(`${backendUrl}/mcp/${user.publicApi}/sse`);
+    }
+  }, [user?.publicApi, backendUrl, toaster]);
 
   const t = useT();
 
@@ -48,7 +52,7 @@ export const PublicComponent = () => {
         </a>
         <a
           className="underline hover:font-bold hover:underline"
-          href="https://www.npmjs.com/package/n8n-nodes-postiz"
+          href="https://www.npmjs.com/package/n8n-nodes-pozmixal"
           target="_blank"
         ><br />
           {t(
@@ -91,14 +95,14 @@ export const PublicComponent = () => {
       <div className="my-[16px] mt-[16px] bg-sixth border-fifth items-center border rounded-[4px] p-[24px] flex gap-[24px]">
         <div className="flex items-center">
           {reveal2 ? (
-            `${backendUrl}/mcp/` + user.publicApi + '/sse'
+            `${backendUrl}/mcp/${user.publicApi}/sse`
           ) : (
             <>
               <div className="blur-sm">
-                {(`${backendUrl}/mcp/` + user.publicApi + '/sse').slice(0, -5)}
+                {(`${backendUrl}/mcp/${user.publicApi}/sse`).slice(0, -5)}
               </div>
               <div>
-                {(`${backendUrl}/mcp/` + user.publicApi + '/sse').slice(-5)}
+                {(`${backendUrl}/mcp/${user.publicApi}/sse`).slice(-5)}
               </div>
             </>
           )}

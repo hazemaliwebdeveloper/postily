@@ -2,26 +2,23 @@ import { fetchRequestUtil } from '@gitroom/extension/utils/request.util';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-/**
- * SERVICE WORKER MESSAGE LISTENER
- * 
- * This listener handles all communication from content scripts, popups, and options pages.
- * CRITICAL: This MUST be registered synchronously before any messages are sent.
- * 
- * Features:
- * - Proper async handling with return true for async operations
- * - Comprehensive error handling and logging
- * - Support for multiple action types (HTTP requests, storage, cookies)
- */
+let isServiceWorkerInitialized = false;
 
 if (isDevelopment) {
   console.log('[Service Worker] Background script loaded and ready to accept messages');
 }
 
-// Register message listener immediately
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   try {
-    // Ping action - used to verify service worker is running
+    if (request.action === '__health_check__') {
+      if (isDevelopment) {
+        console.log('[Service Worker] Health check from content script');
+      }
+      isServiceWorkerInitialized = true;
+      sendResponse({ status: 'healthy', timestamp: Date.now() });
+      return true;
+    }
+
     if (request.action === 'ping') {
       if (isDevelopment) {
         console.log('[Service Worker] Received ping from', sender.url);

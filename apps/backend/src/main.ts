@@ -15,14 +15,16 @@ import { HttpExceptionFilter } from '@gitroom/nestjs-libraries/services/exceptio
 import { ConfigurationChecker } from '@gitroom/helpers/configuration/configuration.checker';
 
 async function bootstrap() {
-  const frontendUrl = process.env.FRONTEND_URL;
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:4200';
   const mainUrl = process.env.MAIN_URL;
   
-  const allowedOrigins = [frontendUrl, mainUrl].filter(Boolean);
+  const allowedOrigins = [frontendUrl, mainUrl, 'http://localhost:4200', 'http://127.0.0.1:4200'].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i);
   
-  if (!frontendUrl) {
-    Logger.warn('CRITICAL: FRONTEND_URL not set. CORS will block requests. Set FRONTEND_URL in .env');
+  if (!process.env.FRONTEND_URL) {
+    Logger.warn('⚠️ FRONTEND_URL not explicitly set. Using default: http://localhost:4200');
   }
+  
+  Logger.log(`✅ CORS configured for origins: ${allowedOrigins.join(', ')}`);
   
   const app = await NestFactory.create(AppModule, {
     rawBody: true,
